@@ -1,0 +1,27 @@
+MIJN GELD IN BALANS — PWA-PAKKET
+
+Inhoud:
+- index.html: jouw bestaande budgetapp en functies
+- manifest.json: installatiegegevens en weergave
+- service-worker.js: cache en offline app-shell
+- icon-192.png en icon-512.png: Android-appiconen
+
+INSTALLEREN
+1. Pak het ZIP-bestand uit.
+2. Upload alle bestanden naar één HTTPS-hostinglocatie, bijvoorbeeld GitHub Pages.
+3. Open de HTTPS-link rechtstreeks in Chrome op Android.
+4. Kies in Chrome ⋮ > 'App installeren' of 'Toevoegen aan startscherm'.
+
+LET OP
+Google Sites of Apps Script-insluiting maakt dit pakket niet op zichzelf installeerbaar.
+Gebruik statische HTTPS-hosting voor alle bestanden.
+
+GEGEVENS
+De app bewaart gegevens lokaal in browseropslag (localStorage). Oude gegevens van
+het Apps Script-/Sites-adres worden niet automatisch overgezet. Maak zo mogelijk
+eerst een JSON-back-up in de oude app en bewaar die veilig. Na installatie kun je
+de back-upfunctie gebruiken als die in de app beschikbaar is.
+
+OFFLINE
+Na de eerste succesvolle online opening wordt de app-shell gecachet. De app kan
+daarna opnieuw openen zonder verbinding; externe diensten zouden wel internet vragen.

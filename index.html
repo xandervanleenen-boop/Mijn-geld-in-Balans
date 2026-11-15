@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#173f35">
+<title>Mijn Geld in Balans</title>
+<style>
+:root{--green:#173f35;--mint:#dcebe3;--bg:#f4f7f5;--ink:#1e2c27;--muted:#68766f;--line:#e2e9e4;--white:#fff;--gold:#e9c879}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px system-ui,-apple-system,Segoe UI,sans-serif}
+header{background:var(--green);color:white;padding:22px 18px 28px;border-radius:0 0 24px 24px}
+header .top{max-width:900px;margin:auto}h1{font-size:24px;margin:0 0 5px}header p{margin:0;color:#d9e6df}
+main{max-width:900px;margin:18px auto;padding:0 14px 36px}
+nav{display:flex;gap:7px;overflow:auto;padding:5px 0 14px}
+nav button{border:0;border-radius:20px;padding:10px 14px;background:#e7eee9;color:var(--green);white-space:nowrap;font-weight:650}
+nav button.active{background:var(--green);color:white}
+.panel{display:none}.panel.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px}
+.card{background:white;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 2px 8px #173f3508}
+.card h3{font-size:13px;color:var(--muted);font-weight:600;margin:0 0 8px}.value{font-size:24px;font-weight:750;letter-spacing:-.5px}.sub{font-size:12px;color:var(--muted);margin-top:5px}
+h2{font-size:20px;margin:8px 0 14px}.section{margin:16px 0}
+label{display:block;font-size:13px;color:var(--muted);margin:10px 0 5px}
+input,select{width:100%;padding:12px;border:1px solid #d5dfd8;border-radius:10px;background:white;font:inherit;color:var(--ink)}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}
+button.primary{background:var(--green);color:white;border:0;border-radius:10px;padding:12px 16px;font-weight:700;margin-top:12px}
+button.secondary{background:var(--mint);color:var(--green);border:0;border-radius:10px;padding:10px 13px;font-weight:650}
+button.danger{background:#f9e6e3;color:#8c2f27;border:0;border-radius:9px;padding:8px 10px}
+.item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:0}.item small{display:block;color:var(--muted);margin-top:3px}
+.progress{height:10px;background:#e8eee9;border-radius:20px;overflow:hidden;margin:10px 0}.progress span{display:block;height:100%;background:#4d9272;width:0}
+.note{background:#fff8e8;border:1px solid #f0e2bc;border-radius:12px;padding:12px;color:#69552a;font-size:13px}
+.muted{color:var(--muted)}.money{font-variant-numeric:tabular-nums}
+footer{text-align:center;color:var(--muted);font-size:12px;margin-top:25px}
+@media(min-width:650px){header{padding:28px 24px 34px}.value{font-size:28px}}
+</style>
+
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#173f35">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="./icon-192.png">
+
+</head>
+<body>
+<header><div class="top"><h1>Mijn Geld in Balans</h1><p>Grip op je weekbudget, rekeningen, schulden en spaardoel.</p></div></header>
+<main>
+<nav id="tabs">
+<button class="active" data-tab="dashboard">Overzicht</button><button data-tab="bank">Bankrekeningen</button><button data-tab="week">Weekbudget</button><button data-tab="debts">Schulden</button><button data-tab="saving">Sparen</button><button data-tab="transactions">Transacties</button><button data-tab="settings">Instellingen</button>
+</nav>
+<section id="dashboard" class="panel active">
+<h2>Jouw financiële overzicht</h2>
+<div class="grid">
+<div class="card"><h3>Totaal banksaldo</h3><div class="value money" id="dashBank">€ 0,00</div><div class="sub">Lopende + spaarrekening</div></div>
+<div class="card"><h3>Inkomen per maand (gem.)</h3><div class="value money" id="dashIncome">€ 0,00</div><div class="sub">Op basis van weekinkomen</div></div>
+<div class="card"><h3>Uitgaven per maand</h3><div class="value money" id="dashExpenses">€ 0,00</div><div class="sub">Inclusief reserveringen</div></div>
+<div class="card"><h3>Over na begrote uitgaven</h3><div class="value money" id="dashLeft">€ 0,00</div><div class="sub">Indicatie op basis van je begroting</div></div>
+</div>
+<div class="section card"><h3>Eerste spaardoel</h3><div class="row"><div><div class="value money" id="dashSaved">€ 0,00</div><div class="sub">Huidig spaarsaldo</div></div><div><div class="value money" id="dashGoal">€ 1.000,00</div><div class="sub">Doelbedrag</div></div></div><div class="progress"><span id="dashProgress"></span></div><div class="sub" id="dashPercent">0% behaald</div></div>
+<div class="section card"><h3>Bekende schulden</h3><div class="value money" id="dashDebt">€ 0,00</div><div class="sub">Huurachterstand wordt meegenomen zodra je het saldo invult.</div></div>
+<div class="note">Let op: dit is een persoonlijke begroting en geen live koppeling met je bank. Vul de actuele saldi zelf in en werk ze bij wanneer je bankrekening verandert.</div>
+</section>
+<section id="bank" class="panel">
+<h2>Bankrekeningen</h2><p class="muted">Vul hier de actuele saldi in. Het totaal verschijnt automatisch op het dashboard.</p>
+<div class="card">
+<label for="checking">Huidig saldo lopende rekening (€)</label><input id="checking" type="number" step=".01" inputmode="decimal" placeholder="Bijvoorbeeld 250,00">
+<label for="savings">Huidig saldo spaarrekening (€)</label><input id="savings" type="number" step=".01" inputmode="decimal" placeholder="Bijvoorbeeld 100,00">
+<div class="section"><h3>Totaal beschikbaar</h3><div class="value money" id="bankTotal">€ 0,00</div></div>
+<button class="primary" id="saveBank">Saldi opslaan</button>
+</div>
+</section>
+<section id="week" class="panel">
+<h2>Weekbudget</h2><div class="grid">
+<div class="card"><h3>Weekinkomen</h3><div class="value money" id="weekIncome">€ 574,37</div></div>
+<div class="card"><h3>Begrote weekuitgaven</h3><div class="value money" id="weekExpenses">€ 0,00</div></div>
+<div class="card"><h3>Over per week</h3><div class="value money" id="weekLeft">€ 0,00</div></div>
+</div>
+<div class="card section"><h3>Weekverdeling (startbegroting)</h3><div id="weekItems"></div></div>
+</section>
+<section id="debts" class="panel">
+<h2>Schulden bijhouden</h2><div class="card"><div id="debtList"></div></div>
+<div class="card section"><h3>Schuld toevoegen of saldo aanpassen</h3>
+<label>Omschrijving</label><input id="debtName" placeholder="Bijvoorbeeld huurachterstand">
+<div class="row"><div><label>Openstaand bedrag (€)</label><input id="debtAmount" type="number" min="0" step=".01"></div><div><label>Aflossing per maand (€)</label><input id="debtPayment" type="number" min="0" step=".01"></div></div>
+<button class="primary" id="addDebt">Schuld toevoegen</button></div>
+</section>
+<section id="saving" class="panel">
+<h2>Spaardoel</h2><div class="card"><h3>Je eerste doel</h3><div class="row"><div><div class="value money" id="saveCurrent">€ 0,00</div><div class="sub">Huidig spaarsaldo (gekoppeld aan Bankrekeningen)</div></div><div><div class="value money" id="saveTarget">€ 1.000,00</div><div class="sub">Spaardoel</div></div></div><div class="progress"><span id="saveProgress"></span></div><p class="muted" id="saveText">Nog € 1.000,00 te gaan.</p>
+<label>Nieuw spaardoel (€)</label><input id="goalInput" type="number" min="1" step=".01" value="1000"><button class="primary" id="saveGoal">Spaardoel opslaan</button></div>
+</section>
+<section id="transactions" class="panel">
+<h2>Transacties</h2><div class="card"><h3>Nieuwe transactie</h3>
+<label>Omschrijving</label><input id="txName" placeholder="Bijvoorbeeld boodschappen">
+<div class="row"><div><label>Bedrag (€)</label><input id="txAmount" type="number" step=".01" min=".01"></div><div><label>Soort</label><select id="txType"><option value="expense">Uitgave</option><option value="income">Inkomst</option></select></div></div>
+<button class="primary" id="addTx">Transactie toevoegen</button></div>
+<div class="card section"><h3>Recente transacties</h3><div id="txList" class="muted">Nog geen transacties.</div></div>
+</section>
+<section id="settings" class="panel">
+<h2>Instellingen en back-up</h2><div class="card"><h3>Begroting aanpassen</h3>
+<label>Netto inkomen per week (€)</label><input id="incomeInput" type="number" step=".01">
+<label>Rookbudget per maand (€) — streefbedrag</label><input id="smokeInput" type="number" step=".01">
+<button class="primary" id="saveSettings">Begroting opslaan</button></div>
+<div class="card section"><h3>Gegevens veiligstellen</h3><p class="muted">Maak een JSON-back-up om je gegevens te bewaren of op een ander apparaat terug te zetten.</p><button class="secondary" id="export">Back-up downloaden</button><label>Back-up terugzetten</label><input type="file" id="importFile" accept="application/json"><button class="danger" id="reset">Alle appgegevens wissen</button></div>
+<div class="note section">Je gegevens worden lokaal in deze browser opgeslagen. Wis je browsergegevens of wissel je apparaat, dan kunnen ze verloren gaan. Maak daarom regelmatig een back-up.</div>
+</section>
+<footer>Mijn Geld in Balans · bedragen zijn handmatig ingevoerd en niet gekoppeld aan je bank.</footer>
+</main>
+<script>
+const defaults={
+ checking:0,savings:0,goal:1000,incomeWeekly:574.37,smokingMonthly:200,
+ expenses:[
+ ["Huur",817.65],["Eneco",35],["ISTA energievoorschot",125],["Zorgkosten (aanname)",185.95],
+ ["Telefoon/internet",26.06],["Autoverzekering",52.57],["Wegenbelasting auto",25],
+ ["Benzine",173.33],["Boodschappen",325],["Aflossing huurachterstand",100],
+ ["Vreeswijk lening",100],["Rookbudget (streefbedrag)",200],
+ ["Bootverzekering (reservering)",21.73],["Wegenwacht (reservering)",12.70],
+ ["Liggeld boot (reservering)",154.17],["Gemeentelijke belastingen (reservering)",24.91],
+ ["Waterschapsbelasting (reservering)",3.18]
+ ],
+ debts:[
+ {name:"Vreeswijk lening",amount:500,payment:100},
+ {name:"De Booij lening",amount:10679,payment:0},
+ {name:"Huurachterstand",amount:0,payment:100}
+ ],transactions:[]
+};
+let data;
+try{data={...defaults,...JSON.parse(localStorage.getItem("mgb_data")||"{}")};}catch(e){data={...defaults};}
+function save(){localStorage.setItem("mgb_data",JSON.stringify(data));render();}
+function euro(n){return new Intl.NumberFormat('nl-NL',{style:'currency',currency:'EUR'}).format(Number(n)||0)}
+function num(id){return Number(document.getElementById(id).value)||0}
+function monthlyIncome(){return data.incomeWeekly*52/12}
+function monthlyExpenses(){return data.expenses.reduce((s,x)=>s+x[1],0)}
+function totalDebt(){return data.debts.reduce((s,d)=>s+(Number(d.amount)||0),0)}
+function render(){
+ const bank=(+data.checking||0)+(+data.savings||0), inc=monthlyIncome(), exp=monthlyExpenses(), left=inc-exp, pct=Math.min(100,Math.max(0,(data.savings/data.goal)*100));
+ document.getElementById('checking').value=data.checking;document.getElementById('savings').value=data.savings;
+ document.getElementById('bankTotal').textContent=euro(bank);document.getElementById('dashBank').textContent=euro(bank);
+ document.getElementById('dashIncome').textContent=euro(inc);document.getElementById('dashExpenses').textContent=euro(exp);document.getElementById('dashLeft').textContent=euro(left);
+ document.getElementById('dashSaved').textContent=euro(data.savings);document.getElementById('dashGoal').textContent=euro(data.goal);
+ document.getElementById('dashProgress').style.width=pct+'%';document.getElementById('dashPercent').textContent=Math.round(pct)+'% behaald';
+ document.getElementById('dashDebt').textContent=euro(totalDebt());
+ document.getElementById('weekIncome').textContent=euro(data.incomeWeekly);
+ document.getElementById('weekExpenses').textContent=euro(exp*12/52);document.getElementById('weekLeft').textContent=euro(data.incomeWeekly-exp*12/52);
+ document.getElementById('weekItems').innerHTML=data.expenses.map(x=>`<div class="item"><div>${x[0]}</div><strong class="money">${euro(x[1]*12/52)} / week</strong></div>`).join('');
+ document.getElementById('debtList').innerHTML=data.debts.map((d,i)=>`<div class="item"><div><strong>${esc(d.name)}</strong><small>Saldo: ${euro(d.amount)} · aflossing: ${euro(d.payment)} / maand</small></div><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="secondary" onclick="editDebt(${i})">Aanpassen</button><button class="danger" onclick="deleteDebt(${i})">Verwijderen</button></div></div>`).join('')||'Nog geen schulden ingevoerd.';
+ document.getElementById('saveCurrent').textContent=euro(data.savings);document.getElementById('saveTarget').textContent=euro(data.goal);
+ document.getElementById('saveProgress').style.width=pct+'%';document.getElementById('saveText').textContent=`Nog ${euro(Math.max(0,data.goal-data.savings))} te gaan.`;
+ document.getElementById('goalInput').value=data.goal;document.getElementById('incomeInput').value=data.incomeWeekly;document.getElementById('smokeInput').value=data.smokingMonthly;
+ document.getElementById('txList').innerHTML=data.transactions.length?data.transactions.slice().reverse().map(t=>`<div class="item"><div>${esc(t.name)}<small>${esc(t.date)} · ${t.type==='income'?'Inkomst':'Uitgave'}</small></div><strong>${t.type==='income'?'+':'−'} ${euro(t.amount)}</strong></div>`).join(''):'Nog geen transacties.';
+}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById(b.dataset.tab).classList.add('active');}));
+document.getElementById('saveBank').onclick=()=>{data.checking=num('checking');data.savings=num('savings');save();alert('Banksaldi opgeslagen.');};
+window.deleteDebt=i=>{const d=data.debts[i];if(!d)return;if(confirm('Weet je zeker dat je de schuld “'+d.name+'” helemaal wilt verwijderen?')){data.debts.splice(i,1);save();}};
+window.editDebt=i=>{const d=data.debts[i];const a=prompt('Nieuw openstaand saldo voor '+d.name,d.amount);if(a===null)return;const p=prompt('Aflossing per maand',d.payment);if(p===null)return;d.amount=Math.max(0,Number(a)||0);d.payment=Math.max(0,Number(p)||0);save();};
+document.getElementById('addDebt').onclick=()=>{const name=document.getElementById('debtName').value.trim();if(!name){alert('Vul een omschrijving in.');return;}data.debts.push({name,amount:num('debtAmount'),payment:num('debtPayment')});document.getElementById('debtName').value='';document.getElementById('debtAmount').value='';document.getElementById('debtPayment').value='';save();};
+document.getElementById('saveGoal').onclick=()=>{data.goal=Math.max(1,num('goalInput'));save();};
+document.getElementById('addTx').onclick=()=>{const name=document.getElementById('txName').value.trim(),amount=num('txAmount');if(!name||amount<=0){alert('Vul een omschrijving en een bedrag groter dan nul in.');return;}data.transactions.push({name,amount,type:document.getElementById('txType').value,date:new Date().toLocaleDateString('nl-NL')});document.getElementById('txName').value='';document.getElementById('txAmount').value='';save();};
+document.getElementById('saveSettings').onclick=()=>{data.incomeWeekly=Math.max(0,num('incomeInput'));data.smokingMonthly=Math.max(0,num('smokeInput'));const i=data.expenses.findIndex(x=>x[0].startsWith('Rookbudget'));if(i>=0)data.expenses[i][1]=data.smokingMonthly;save();alert('Begroting opgeslagen.');};
+document.getElementById('export').onclick=()=>{const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mijn-geld-in-balans-backup.json';a.click();URL.revokeObjectURL(a.href);};
+document.getElementById('importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const imported=JSON.parse(await f.text());if(!imported||!Array.isArray(imported.debts)||!Array.isArray(imported.expenses))throw Error();data={...defaults,...imported};save();alert('Back-up teruggezet.');}catch(err){alert('Dit back-upbestand kan niet worden gelezen.');}};
+document.getElementById('reset').onclick=()=>{if(confirm('Weet je zeker dat je alle opgeslagen gegevens wilt wissen?')){localStorage.removeItem('mgb_data');data=JSON.parse(JSON.stringify(defaults));save();}};
+render();
+</script>
+
+<script>
+if ('serviceWorker' in navigator &&
+    (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('./service-worker.js')
+      .catch(function (e) { console.warn('Service worker registratie:', e); });
+  });
+}
+</script>
+
+</body></html>
